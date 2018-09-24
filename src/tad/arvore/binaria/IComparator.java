@@ -10,5 +10,5 @@ package tad.arvore.binaria;
  * @author rute
  */
 public interface IComparator {
-    public Object compare(Object x, Object y);
+    public int compare(Object x, Object y);
 }
