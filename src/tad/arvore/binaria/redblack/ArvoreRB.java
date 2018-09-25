@@ -6,8 +6,10 @@
 package tad.arvore.binaria.redblack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import tad.arvore.binaria.ArvoreBinaria;
 import tad.arvore.binaria.Comparator;
+import tad.arvore.binaria.No;
 
 /**
  *
@@ -16,6 +18,9 @@ import tad.arvore.binaria.Comparator;
 public class ArvoreRB extends ArvoreBinaria{
     public static final boolean VERMELHO = false;
     public static final boolean PRETO = true;
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RESET = "\u001B[0m";
     
     NoRB raiz, nil;
     Comparator c = new Comparator();
@@ -53,6 +58,7 @@ public class ArvoreRB extends ArvoreBinaria{
         int resultado;
         if(isEmpty()){
             setRaiz(novoNo);
+            fixCase1(novoNo);
             incrementarTamanho();
             System.out.println(novoNo+" adicionado como Raiz.");
         } else {
@@ -77,7 +83,7 @@ public class ArvoreRB extends ArvoreBinaria{
     }
     
     public void fixCase1(NoRB no) {
-        if (no.getPai() == null) {
+        if (this.isRoot(no)) {
             no.setBlack();
         } else {
             fixCase2(no);
@@ -93,8 +99,6 @@ public class ArvoreRB extends ArvoreBinaria{
     
     public void fixCase3(NoRB no) {
         NoRB tio = tio(no);
-        
-        System.out.println(tio.isBlack() ? "PRETO" : "VERMELHO");
         
         if (tio != null && tio != this.nil && tio.getCor() == VERMELHO) {
             NoRB pai = no.getPai();
@@ -185,8 +189,8 @@ public class ArvoreRB extends ArvoreBinaria{
         }
         subarvoreDireita.setPai(painho);
         
-        no.mudarCor();
-        subarvoreDireita.mudarCor();
+//        no.mudarCor();
+//        subarvoreDireita.mudarCor();
     }
     
     public void rotacaoSimplesDir(NoRB no){
@@ -232,8 +236,8 @@ public class ArvoreRB extends ArvoreBinaria{
         }
         subarvoreEsquerda.setPai(painho);
         
-        no.mudarCor();
-        subarvoreEsquerda.mudarCor();
+//        no.mudarCor();
+//        subarvoreEsquerda.mudarCor();
         
     }
     
@@ -247,4 +251,38 @@ public class ArvoreRB extends ArvoreBinaria{
         rotacaoSimplesDir(no);
     }
     
+    public String toString () {
+        Iterator itr = inOrder();
+        if (itr == null) return "";
+        int h = this.height() + 5;
+        int l = this.size() + 5;
+        
+        Object matrix[][] = new Object[h][l];
+        NoRB matrixRB[][] = new NoRB[h][l];
+//        System.out.println("h: " + h + ", l:" + l);
+        
+        int i = 0;
+        while (itr.hasNext()) {
+            NoRB n = (NoRB) itr.next();
+            int d = this.depth(n);
+//            System.out.println("d: " + d + ", i:" + i);
+//            System.out.println(n.getElemento());
+            matrix[d][i] = n.getElemento();
+            matrixRB[d][i] = n;
+            i++;
+        }
+        
+        String str = "";
+        
+        for (i = 0; i < h; i++){
+            for (int j = 0; j < l; j++) {
+                str += matrix[i][j] == null ? "  " : (matrixRB[i][j].isBlack() ? ANSI_BLACK : ANSI_RED) +
+                        ((((int) matrix[i][j] >= 0) && ((int) matrix[i][j] < 10)  ? " " + matrix[i][j] : matrix[i][j]))
+                        + ANSI_RESET;
+            }
+            str += "\n";
+        }
+        
+        return str;
+    }
 }

@@ -13,11 +13,26 @@ public class Teste {
     public static void main(String[] args) {
         ArvoreRB rb = new ArvoreRB();
         
+        rb.inserir(2);
+        System.out.println(rb);
+        
+        rb.inserir(1);
+        System.out.println(rb);
+        
         rb.inserir(4);
-        rb.inserir(26);
-        rb.inserir(3);
+        System.out.println(rb);
+        rb.inserir(5);
+        System.out.println(rb);
         rb.inserir(9);
-        rb.inserir(15);
+        System.out.println(rb);
+        rb.inserir(3);
+        System.out.println(rb);
+        rb.inserir(6);
+        System.out.println(rb);
+        
+        rb.inserir(7);
+        
+        System.out.println(rb);
 
     }
 }
