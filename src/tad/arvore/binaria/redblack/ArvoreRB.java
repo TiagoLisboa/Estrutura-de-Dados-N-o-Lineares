@@ -146,6 +146,224 @@ public class ArvoreRB extends ArvoreBinaria{
         }
     }
     
+    @Override
+    public NoRB remover(No no) {
+        return remover((NoRB) no, no.getElemento());
+    }
+    
+    public NoRB remover(int valor) {
+        NoRB deletar = (NoRB) buscar(valor);
+        if(deletar == null) return this.nil;
+        return remover(deletar, deletar.getElemento());
+    }
+
+    private NoRB remover(NoRB n, Object o) {
+        if (n != null) {
+            /*folha*/
+            if (isExternal(n)) {
+                if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
+                    n.getPai().setFilhoEsquerda(null);
+                } else {
+                    n.getPai().setFilhoDireita(null);
+                }
+                decrementarTamanho();
+                return n;
+            }
+            /*um nó*/
+            if (n.getFilhoEsquerda() != null && n.getFilhoDireita() == null) {
+                if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
+                    n.getPai().setFilhoEsquerda(n.getFilhoEsquerda());
+                    n.getFilhoEsquerda().setPai(n.getPai());
+                } else {
+                    n.getPai().setFilhoDireita(n.getFilhoEsquerda());
+                    n.getFilhoEsquerda().setPai(n.getPai());
+                }
+                decrementarTamanho();
+                if(n.isBlack()){
+                    corrigirRemocao(n.getFilhoEsquerda());
+                }
+                return n;
+            }
+            if (n.getFilhoEsquerda() == null && n.getFilhoDireita() != null) {
+                if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
+                    n.getPai().setFilhoEsquerda(n.getFilhoDireita());
+                    n.getFilhoDireita().setPai(n.getPai());
+                } else {
+                    n.getPai().setFilhoDireita(n.getFilhoDireita());
+                    n.getFilhoDireita().setPai(n.getPai());
+                }
+                decrementarTamanho();
+                if(n.isBlack()){
+                    corrigirRemocao(n.getFilhoDireita());
+                }
+                return n;
+            }
+            /*dois nós*/
+            NoRB andaEsq = n.getFilhoDireita();
+            while (andaEsq.getFilhoEsquerda() != null) {
+                andaEsq = andaEsq.getFilhoEsquerda();
+            }
+            Object valorBackup = andaEsq.getElemento();
+            remover(andaEsq, valorBackup);
+            n.setElemento((int) valorBackup);
+            return n;
+        }
+        return null;
+    }
+    
+    public void corrigirRemocao(NoRB n) {
+        
+        if (n.getPai() != null) {// CASO 1: verificar se o pai não é nulo
+        // Se for vai pro caso 2
+            boolean isLeft = n.getPai().isLeftChild(n);
+            NoRB irmao = isLeft ? n.getPai().getFilhoDireita() : n.getPai().getFilhoEsquerda();
+            if (n.isBlack() && n.getPai().isBlack() && irmao != null && !irmao.isBlack()) { 
+                // CASO 2: verifica se o nó e seu pai forem pretos e seu irmão for vermelho
+                // Se for o pai deve ser pintado de vermelho e o irmão de preto e 
+                n.getPai().setRed();
+                irmao.setBlack();
+                
+                if (isLeft) {   // então se o nó for filho esquerdo, faz a rotação à esquerda de 
+                                // seu pai e vai pro caso 3,
+                    this.rotacaoSimplesEsq(n.getPai());
+                } else {    // se for filho direito, rotaciona 
+                            // o pai à direita e vai pro caso 3
+                    this.rotacaoSimplesDir(n.getPai());
+                }
+            }
+            
+            // CASO 3: se o pai do nó, o irmão, o filho esquerdo e direito do irmão forem todos pretos,
+            // obs: no null equivale a um no preto
+            if (n.getPai().isBlack() &&  // pai é preto
+                    (irmao != null && irmao.isBlack() && // irmão é preto
+                        (irmao.getFilhoEsquerda() == null || irmao.getFilhoEsquerda().isBlack()) && // os filhos do irmão são pretos
+                        (irmao.getFilhoDireita() == null || irmao.getFilhoDireita().isBlack())
+                    )
+                ) {
+                // pinta o irmão de vermelho e volte para o primeiro caso com o
+                // pai do nó, se não forem vai pro próximo caso
+                irmao.setRed();
+                corrigirRemocao(n.getPai());
+                return;   
+            }
+            
+            // CASO 4: se o irmão e o filho esquerdo e direito do irmão forem pretos e o pai do nó for vermelho,
+            if (!n.getPai().isBlack() &&  // pai é vermelho
+                    (irmao != null && irmao.isBlack() && // irmão é preto
+                        (irmao.getFilhoEsquerda() == null || irmao.getFilhoEsquerda().isBlack()) && // os filhos do irmão são pretos
+                        (irmao.getFilhoDireita() == null || irmao.getFilhoDireita().isBlack())
+                    )
+                ) {
+                // deve pintar o irmão de vermelho e o pai do nó de preto, 
+                irmao.setRed();
+                n.getPai().setBlack();
+                corrigirRemocao(n.getPai());
+                return;   
+            } // se não deve prosseguir para o próximo caso
+            
+            // CASO 5: se o nó for filho esquerdo e o filho direito do irmão for preto
+            if (isLeft && (irmao != null && (irmao.getFilhoDireita() == null || irmao.getFilhoDireita().isBlack()))) {
+                // deverá pintar o irmão de vermelho e o filho esquerdo do irmão de preto e aí sim rotacionar à direita o irmão,
+                irmao.setRed();
+                this.rotacaoSimplesDir(irmao);
+            }
+            // mas se o nó for filho direito
+            if (!isLeft) {
+                // deverá pintar o irmão de vermelho e o filho direito do
+                if (irmao != null) {
+                    irmao.setRed();
+                    // irmão de preto e então rotacionar para esquerda o irmão, indo para o último caso.
+                    if (irmao.getFilhoDireita() != null) {
+                        irmao.getFilhoDireita().setBlack();
+                        this.rotacaoSimplesEsq(irmao);
+                    }
+                }
+            }
+            
+            // CASO 6: deverá pintar o pai do nó de preto,
+            n.getPai().setBlack();
+            // caso o nó seja filho esquerdo, 
+            if (isLeft) {
+                // pinta o filho direito do irmão do nó de preto e 
+                if (irmao != null && irmao.getFilhoDireita() != null) {
+                    irmao.getFilhoDireita().setBlack();
+                    // rotaciona o pai do nó para a esquerda
+                    this.rotacaoSimplesEsq(n.getPai());
+                }
+            } else { // se o nó for filho direito, 
+                // pinta o filho esquerdo do irmão de preto e rotaciona o pai para direita
+                if (irmao != null && irmao.getFilhoEsquerda() != null) {
+                    irmao.getFilhoEsquerda().setBlack();
+                    this.rotacaoSimplesDir(n.getPai());
+                }
+            }
+                
+            
+            
+        }
+        
+        
+        
+        
+        
+//        if(n != this.raiz && n.isBlack()){
+//            if(n.getPai().isLeftChild(n)){
+//                NoRB aux = n.getPai().getFilhoDireita();
+//                if(!aux.isBlack()){
+//                    aux.setBlack();
+//                    n.getPai().setRed();
+//                    rotacaoSimplesEsq(n.getPai());
+//                    aux = n.getPai().getFilhoDireita();
+//                }
+//                if(aux.getFilhoEsquerda().isBlack() && aux.getFilhoDireita().isBlack()){
+//                     aux.setRed();
+//                     n = n.getPai();
+//                }else if(aux.getFilhoDireita().isBlack()){
+//                    aux.getFilhoEsquerda().setBlack();
+//                    aux.setRed();
+//                    rotacaoSimplesDir(aux);
+//                    aux = n.getPai().getFilhoDireita();
+//                } else {
+//                    if(n.getPai().isBlack()) aux.setBlack();
+//                    else aux.setRed();
+//                    n.getPai().setBlack();
+//                    aux.getFilhoDireita().setBlack();
+//                    rotacaoSimplesEsq(n.getPai());
+//                    n = this.raiz;
+//                }
+//            }
+//            else{
+//                NoRB aux = n.getPai().getFilhoEsquerda();
+//                if(!aux.isBlack()){
+//                    aux.setBlack();
+//                    n.getPai().setRed();
+//                    rotacaoSimplesDir(n.getPai());
+//                    aux = n.getPai().getFilhoEsquerda();
+//                }
+//                if(aux.getFilhoDireita().isBlack() && aux.getFilhoEsquerda().isBlack()){
+//                     aux.setRed();
+//                     n = n.getPai();
+//                }else if(aux.getFilhoEsquerda().isBlack()){
+//                    aux.getFilhoDireita().setBlack();
+//                    aux.setRed();
+//                    rotacaoSimplesEsq(aux);
+//                    aux = n.getPai().getFilhoEsquerda();
+//                } else {
+//                    if(n.getPai().isBlack()) aux.setBlack();
+//                    else aux.setRed();
+//                    n.getPai().setBlack();
+//                    aux.getFilhoEsquerda().setBlack();
+//                    rotacaoSimplesDir(n.getPai());
+//                    n = this.raiz;
+//                }
+//            }
+//            corrigirRemocao(n);
+//        }
+//        else {
+//           n.setBlack();
+//        }
+    }
+    
     public void rotacaoSimplesEsq(NoRB no) {
         // separar a subarvore da direita
         NoRB subarvoreDireita = no.getFilhoDireita();
