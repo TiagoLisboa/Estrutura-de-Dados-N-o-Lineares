@@ -63,9 +63,9 @@ public class Teste {
         
         System.out.println(rb);
         
-//        rb.remover(51);
-//        
-//        System.out.println(rb);
+        rb.remover(51);
+        
+        System.out.println(rb);
 //        
 //        rb.remover(37);
 //        

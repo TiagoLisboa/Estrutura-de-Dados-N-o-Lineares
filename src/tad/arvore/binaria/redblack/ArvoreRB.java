@@ -160,7 +160,10 @@ public class ArvoreRB extends ArvoreBinaria{
     public NoRB remover(int valor) {
         NoRB deletar = (NoRB) buscar(valor);
         if(deletar == null) return this.nil;
-        return remover(deletar, deletar.getElemento());
+        NoRB deletado = remover(deletar, deletar.getElemento());
+        System.out.println(deletado);
+        corrigirRemocao(deletado);
+        return deletado;
     }
 
     private NoRB remover(NoRB n, Object o) {
@@ -185,9 +188,6 @@ public class ArvoreRB extends ArvoreBinaria{
                     n.getFilhoEsquerda().setPai(n.getPai());
                 }
                 decrementarTamanho();
-                if(n.isBlack()){
-                    corrigirRemocao(n.getFilhoEsquerda());
-                }
                 return n;
             }
             if (n.getFilhoEsquerda() == null && n.getFilhoDireita() != null) {
@@ -199,9 +199,6 @@ public class ArvoreRB extends ArvoreBinaria{
                     n.getFilhoDireita().setPai(n.getPai());
                 }
                 decrementarTamanho();
-                if(n.isBlack()){
-                    corrigirRemocao(n.getFilhoDireita());
-                }
                 return n;
             }
             /*dois nós*/
@@ -210,6 +207,7 @@ public class ArvoreRB extends ArvoreBinaria{
                 andaEsq = andaEsq.getFilhoEsquerda();
             }
             Object valorBackup = andaEsq.getElemento();
+            boolean corBackup = andaEsq.getCor();
             remover(andaEsq, valorBackup);
             n.setElemento((int) valorBackup);
             return n;
@@ -582,6 +580,7 @@ public class ArvoreRB extends ArvoreBinaria{
         if (itr == null) return "";
         int h = this.height() + 5;
         int l = this.size() + 5;
+        NoRB ultimo = null;
         
         Object matrix[][] = new Object[h][l];
         NoRB matrixRB[][] = new NoRB[h][l];
@@ -590,6 +589,7 @@ public class ArvoreRB extends ArvoreBinaria{
         int i = 0;
         while (itr.hasNext()) {
             NoRB n = (NoRB) itr.next();
+//            if (ultimo == null) ultimo = n;
             int d = this.depth(n);
 //            System.out.println("d: " + d + ", i:" + i);
 //            System.out.println(n.getElemento());
@@ -599,16 +599,24 @@ public class ArvoreRB extends ArvoreBinaria{
         }
         
         String str = "";
-        
+        boolean e = false;
         for (i = 0; i < h; i++){
             for (int j = 0; j < l; j++) {
-                str += matrix[i][j] == null ? "  " : (matrixRB[i][j].isBlack() ? ANSI_BLACK : ANSI_RED) +
+                str += matrix[i][j] == null ? (e ? "--" : "  ") : (matrixRB[i][j].isBlack() ? ANSI_BLACK : ANSI_RED) +
                         ((((int) matrix[i][j] >= 0) && ((int) matrix[i][j] < 10)  ? " " + matrix[i][j] : matrix[i][j]))
                         + ANSI_RESET;
+                if (matrix[i][j] != null)
+                    e = hasRight(matrixRB[i][j]) ? true : false;
+                if (matrix[i+1 < matrix.length ? i+1 : i][j] != null) {
+                        e = !e;
+                }
             }
+            e = false;
             str += "\n";
         }
         
         return str;
     }
+    
+    
 }
