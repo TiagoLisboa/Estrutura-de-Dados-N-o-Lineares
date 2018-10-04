@@ -63,26 +63,41 @@ public class Teste {
         
         System.out.println(rb);
         
-        rb.remover(51);
-        
-        System.out.println(rb);
-        
-        rb.remover(37);
-        
-        System.out.println(rb);
-        
-        rb.remover(36);
-        
-        System.out.println(rb);
-        
-        rb.remover(39);
-        
-        System.out.println(rb);
-        
-        rb.remover(38);
-        
-        System.out.println(rb);
-        
+//        rb.remover(51);
+//        
+//        System.out.println(rb);
+//        
+//        rb.remover(37);
+//        
+//        System.out.println(rb);
+//        
+//        rb.remover(36);
+//        
+//        System.out.println(rb);
+//        
+//        rb.remover(39);
+//        
+//        System.out.println(rb);
+//        
+//        rb.remover(38);
+//        
+//        System.out.println(rb);
+
+//        rb.inserir(7);
+//        rb.inserir(8);
+//        rb.inserir(2);
+//        rb.inserir(1);
+//        rb.inserir(9);
+//        rb.inserir(5);
+//        rb.inserir(4);
+//        
+//        System.out.println(rb);
+//        
+//        NoRB t = rb.remover(2);
+//        
+//        System.out.println(t);
+//        
+//        System.out.println(rb);
 
     }
 }

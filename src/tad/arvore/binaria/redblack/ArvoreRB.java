@@ -31,12 +31,18 @@ public class ArvoreRB extends ArvoreBinaria{
     public ArvoreRB(){
         super();
         nil = new NoRB(-1);
+        nil.setBlack();
+        nil.setFilhoDireita(nil);
+        nil.setFilhoEsquerda(nil);
     }
     
     public ArvoreRB(int o) {
         super(o);
         raiz = new NoRB(o);
         nil = new NoRB(-1);
+        nil.setBlack();
+        nil.setFilhoDireita(nil);
+        nil.setFilhoEsquerda(nil);
     }
     
     public NoRB tio(NoRB no) {
@@ -212,6 +218,108 @@ public class ArvoreRB extends ArvoreBinaria{
     }
     
     public void corrigirRemocao(NoRB n) {
+        // Situação 1: no é rubro e seu sucessor é rubro
+        // Nada a fazer
+        
+        // Situação 2: no é negro e seu sucessor é rubro
+        // Já é corrigino na remoção
+        // Mas deve pintar o sucessor de negro
+        
+        
+        // Situação 3: n é negro e seu sucessor é negro
+        if (n.isBlack()) {
+            NoRB pai = n.getPai();
+            if (pai != null) {
+                boolean isLeft = n.getPai().isLeftChild(n);
+                NoRB irmao = isLeft ? n.getPai().getFilhoDireita() : n.getPai().getFilhoEsquerda();
+                irmao = irmao != null ? irmao : this.nil;
+                NoRB sobrinhoEsquerda = irmao.getFilhoEsquerda() != null ? irmao.getFilhoEsquerda() : this.nil;
+                NoRB sobrinhoDireita = irmao.getFilhoDireita() != null ? irmao.getFilhoDireita() : this.nil;
+                
+                
+                if (!irmao.isBlack()) { // Tem irmão rubro
+                    if (pai.isBlack()) { // Tem pai negro
+                        // Caso 1:  se x é negro e x tem irmão w rubro e pai negro
+                        pai.setDnegro(true);
+                        rotacaoSimplesEsq(pai);
+                        irmao.setBlack();
+                        pai.setRed();
+                        
+                    } else { // Tem pai rubro
+                        
+                    }
+                } 
+                else { // Tem irmão negro
+                    if (irmao != this.nil) { 
+                        if(sobrinhoEsquerda.isBlack() && sobrinhoDireita.isBlack()) { // filhos do irmão são negros
+                            if (pai.isBlack()) { // Tem pai negro
+                                // Caso 2a: se x é negro, tem irmão w negro com filhos negros e pai negro
+                                irmao.setRed();
+                            } else { // Tem pai rubro
+                                // Caso 2b: se x é negro, tem irmão w negro com filhos negros e pai rubro
+                                irmao.setRed();
+                                pai.setBlack();
+                            }
+                        }
+                        
+                        if (!sobrinhoEsquerda.isBlack() && sobrinhoDireita.isBlack()) {
+                            // Caso 3: se x é negro, tem irmão w negro, tem
+                            // pai de qualquer cor (rubro ou negro), tem
+                            // irmão w com filho esquerdo rubro e irmão w
+                            // com filho direito negro.
+                            rotacaoSimplesDir(irmao);
+                            irmao.setRed();
+                            sobrinhoEsquerda.setBlack();
+                        }
+                        
+                        if (!sobrinhoDireita.isBlack()) {
+                            // Caso 4: se x é negro, tem irmão w negro, tem
+                            // pai de qualquer cor (rubro ou negro), tem
+                            // irmão w com filho esquerdo qualquer cor e
+                            // irmão w com filho direito rubro.
+                            rotacaoSimplesEsq(pai);
+                            irmao.setCor(pai.getCor());
+                            pai.setBlack();
+                            sobrinhoDireita.setBlack();
+                        }
+                            
+                    } 
+                }
+                
+                
+                if (pai.isBlack()) {
+                    // Caso 1: n é negro e tem irmão rubro e pai negro
+                    if (!irmao.isBlack()) { // Tem irmão rubro
+                        
+                    }
+                    // Caso 2a: n é negro, tem irmão negro com filhos negros e pai negro
+                    else { // Tem irmão negro
+                        if (irmao != this.nil && sobrinhoEsquerda.isBlack() && sobrinhoDireita.isBlack()) { // filhos do irmão são pretos
+                            irmao.setRed();
+                        }
+                    }
+                } else { // tem o pai rubro
+                    // Caso 2b: se n é negro, tem irmão negro com filhos negros e pai rubro
+                    if (irmao.isBlack()) {
+                        if (irmao != this.nil && sobrinhoEsquerda.isBlack() && sobrinhoDireita.isBlack()) { // filhos do irmão são pretos
+                            irmao.setRed();
+                            pai.setBlack();
+                        }
+                    }
+                }
+                
+                
+                // Pai de qualquer cor
+                
+                
+                
+            }
+            
+        }
+        
+    }
+    
+    public void corrigirRemocaoErrado(NoRB n) {
         
         if (n.getPai() != null) {// CASO 1: verificar se o pai não é nulo
         // Se for vai pro caso 2

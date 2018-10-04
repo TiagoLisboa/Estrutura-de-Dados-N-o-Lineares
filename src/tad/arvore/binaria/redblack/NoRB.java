@@ -16,12 +16,22 @@ public class NoRB extends No {
     public static final boolean PRETO = true;
     
     private boolean cor;
+    private boolean dnegro;
     private int elemento;
     private NoRB pai, filhoEsquerda, filhoDireita;
     
     public NoRB(int elemento) {
         this.elemento = elemento;
         this.cor = VERMELHO;
+        this.dnegro = false;
+    }
+
+    public boolean isDnegro() {
+        return dnegro;
+    }
+
+    public void setDnegro(boolean dnegro) {
+        this.dnegro = dnegro;
     }
     
     public boolean mudarCor() {
