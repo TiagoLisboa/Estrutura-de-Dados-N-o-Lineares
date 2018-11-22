@@ -67,21 +67,21 @@ public class Teste {
         
         System.out.println(rb);
 //        
-//        rb.remover(37);
-//        
-//        System.out.println(rb);
-//        
-//        rb.remover(36);
-//        
-//        System.out.println(rb);
-//        
-//        rb.remover(39);
-//        
-//        System.out.println(rb);
-//        
-//        rb.remover(38);
-//        
-//        System.out.println(rb);
+        rb.remover(37);
+        
+        System.out.println(rb);
+        
+        rb.remover(36);
+        
+        System.out.println(rb);
+        
+        rb.remover(39);
+        
+        System.out.println(rb);
+        
+        rb.remover(38);
+        
+        System.out.println(rb);
 
 //        rb.inserir(7);
 //        rb.inserir(8);
