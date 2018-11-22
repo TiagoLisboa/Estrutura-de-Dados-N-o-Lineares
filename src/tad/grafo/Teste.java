@@ -5,6 +5,8 @@
  */
 package tad.grafo;
 
+import java.util.Vector;
+
 /**
  *
  * @author tiago
@@ -24,5 +26,9 @@ public class Teste {
         g.insereAresta(v1, v3, 2);
         g.mostraMatriz();
         System.out.println(g.grau(v4));
+        Vector<Arestas> arestas = g.arestasIncidentes(v1);
+        for(int i = 0; i < arestas.size(); i++) {
+            System.out.println(arestas.get(i));
+        }
     }
 }

@@ -167,8 +167,14 @@ public class GrafoSimples implements InterfaceGrafosSimples {
     }
 
     public Vector arestasIncidentes(Vertices vertice) {
-        // método exercício, fique a vontade para implementa-lo coleguinha   
-        return null;
+        Vector<Arestas> arestas = new Vector();
+        int indice = this.achaÍndice(vertice.getChave());
+        for (int i = 0; i < this.qtdVertices; i++) {
+            if (this.matrizAdj[i][indice] != null) {
+                arestas.add(this.matrizAdj[i][indice]);
+            }
+        }
+        return arestas;
     }
 
     public Vector finalVertices(Arestas a) {
