@@ -15,11 +15,14 @@ public class Teste {
         Vertices v1 = new Vertices(1, 20);
         Vertices v2 = new Vertices(2, 20);
         Vertices v3 = new Vertices(3, 20);
+        Vertices v4 = new Vertices(4, 20);
         g.inserirVertice(v1);
         g.inserirVertice(v2);
         g.inserirVertice(v3);
+        g.inserirVertice(v4);
         g.insereAresta(v1, v2, 1);
         g.insereAresta(v1, v3, 2);
         g.mostraMatriz();
+        System.out.println(g.grau(v4));
     }
 }

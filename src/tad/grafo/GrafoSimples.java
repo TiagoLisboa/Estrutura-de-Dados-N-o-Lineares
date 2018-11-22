@@ -124,8 +124,14 @@ public class GrafoSimples implements InterfaceGrafosSimples {
     }
 
     public int grau(Vertices Vertice) {
-        // método exercício, fique a vontade para implementa-lo coleguinha          
-        return 0;
+        int grau = 0;
+        int indice = this.achaÍndice(Vertice.getChave());
+        for (int i = 0; i < this.qtdVertices; i++) {
+            if (this.matrizAdj[i][indice] != null) {
+                grau++;
+            }
+        }
+        return grau;
     }
 
     public int ordem() {
