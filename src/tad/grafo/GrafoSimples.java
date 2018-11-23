@@ -185,8 +185,13 @@ public class GrafoSimples implements InterfaceGrafosSimples {
     }
 
     public Vertices oposto(Vertices v, Arestas a) throws OpostoError {
-        // método exercício, fique a vontade para implementa-lo coleguinha
-        return null;
+        if (a.getVerticeDestino() == v) {
+            return a.getVerticeOrigem();
+        } else if (a.getVerticeOrigem() == v) {
+            return a.getVerticeDestino();
+        } else {
+            throw new OpostoError();
+        }
     }
 
     public boolean éAdjacente(Vertices v, Vertices w) {
