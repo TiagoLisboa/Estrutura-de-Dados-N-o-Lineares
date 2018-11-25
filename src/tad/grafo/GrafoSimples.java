@@ -176,6 +176,17 @@ public class GrafoSimples implements InterfaceGrafosSimples {
         }
         return arestas;
     }
+    
+    public Vector verticesConectados (Vertices veritce) {
+        Vector<Vertices> v=new Vector();
+        int index = achaÍndice(veritce.getChave());
+        for (int i = 0; i < qtdVertices; i++) {
+            if(matrizAdj[index][i] != null){
+                v.add((Vertices)vertices.get(i));
+            }
+        }
+        return v;
+    }
 
     public Vector finalVertices(Arestas a) {
         Vector v = new Vector();
